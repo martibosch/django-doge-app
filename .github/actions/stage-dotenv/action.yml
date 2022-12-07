@@ -1,0 +1,27 @@
+name: staging dotenv
+description: Github Action to get staging dotenv files from (base64-encoded) secrets
+branding:
+  icon: 'cloud'
+  color: 'orange'
+inputs:
+  stage-django:
+    description: 'base64-encoded string with the staging Django env file.'
+  stage-traefik:
+    description: 'base64-encoded string with the staging traefik env file.'
+
+runs:
+  using: "composite"
+  steps:
+    - name:
+      uses: timheuer/base64-to-file@v1.2
+      with:
+        fileName: '.django'
+        fileDir: './.envs/.staging/'
+        encodedString: ${{ inputs.stage-django }}
+
+    - name:
+      uses: timheuer/base64-to-file@v1.2
+      with:
+        fileName: '.traefik'
+        fileDir: './.envs/.staging/'
+        encodedString: ${{ inputs.stage-traefik }}

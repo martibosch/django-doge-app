@@ -1,0 +1,7 @@
+# PostgreSQL
+# ------------------------------------------------------------------------------
+POSTGRES_HOST=postgres
+POSTGRES_PORT=5432
+POSTGRES_DB=django-doge-app
+POSTGRES_USER=zwmokJJbMKaLsgbDmEGhwDrzrUeWTreQ
+POSTGRES_PASSWORD=TadySOuGLTIZqW8DlZsuKcwmGAzgvN6t6MzLpxiGRI6h4dLl9jrniixTvzhH5wG7

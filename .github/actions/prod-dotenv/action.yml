@@ -1,0 +1,36 @@
+name: production dotenv
+description: Github Action to get production dotenv files from (base64-encoded) secrets
+branding:
+  icon: 'cloud'
+  color: 'orange'
+inputs:
+  prod-django:
+    description: 'base64-encoded string with the production Django env file.'
+  prod-traefik:
+    description: 'base64-encoded string with the production traefik env file.'
+  prod-postgres:
+    description: 'base64-encoded string with the production postgres env file.'
+
+runs:
+  using: "composite"
+  steps:
+    - name:
+      uses: timheuer/base64-to-file@v1.2
+      with:
+        fileName: '.django'
+        fileDir: './.envs/.production/'
+        encodedString: ${{ inputs.prod-django }}
+
+    - name:
+      uses: timheuer/base64-to-file@v1.2
+      with:
+        fileName: '.postgres'
+        fileDir: './.envs/.production/'
+        encodedString: ${{ inputs.prod-postgres }}
+
+    - name:
+      uses: timheuer/base64-to-file@v1.2
+      with:
+        fileName: '.traefik'
+        fileDir: './.envs/.production/'
+        encodedString: ${{ inputs.prod-traefik }}

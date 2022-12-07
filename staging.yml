@@ -1,0 +1,13 @@
+services:
+  django:
+    env_file:
+      - ./.envs/.staging/.django
+      - ./.envs/.production/.postgres
+
+  traefik:
+    env_file:
+      - ./.envs/.staging/.traefik
+
+  awscli:
+    env_file:
+      - ./.envs/.staging/.django

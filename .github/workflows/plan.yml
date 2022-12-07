@@ -1,0 +1,67 @@
+name: plan
+
+# Enable Buildkit and let compose use it to speed up image building
+env:
+  DOCKER_BUILDKIT: 1
+  COMPOSE_DOCKER_CLI_BUILD: 1
+
+on:
+  pull_request:
+    branches: [ "stage", "main" ]
+    paths-ignore: [ "docs/**" ]
+
+concurrency:
+  group: ${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
+jobs:
+  plan-stage:
+    environment: stage
+    runs-on: ubuntu-latest
+    if: ${{ github.event.pull_request.base.ref == 'stage' }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3.1.0
+      - name: get production dotenv files from secrets
+        uses: ./.github/actions/prod-dotenv
+        with:
+          prod-django: ${{ secrets.PROD_DJANGO }}
+          prod-postgres: ${{ secrets.PROD_POSTGRES }}
+          prod-traefik: ${{ secrets.PROD_TRAEFIK }}
+      - name: get staging dotenv files from secrets
+        uses: ./.github/actions/stage-dotenv
+        with:
+          stage-django: ${{ secrets.STAGE_DJANGO }}
+          stage-traefik: ${{ secrets.STAGE_TRAEFIK }}
+      - name: build and plan stage
+        uses: ./.github/actions/plan
+        with:
+          compose-config-args: "-f production.yml -f staging.yml"
+          tf-api-token: ${{ secrets.TF_API_TOKEN }}
+          ssh-key: ${{ secrets.SSH_KEY }}
+          droplet-host: ${{ secrets.DROPLET_HOST }}
+          env: stage
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+  plan-prod:
+    environment: prod
+    runs-on: ubuntu-latest
+    if: ${{ github.event.pull_request.base.ref == 'main' }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3.1.0
+      - name: get production dotenv files from secrets
+        uses: ./.github/actions/prod-dotenv
+        with:
+          prod-django: ${{ secrets.PROD_DJANGO }}
+          prod-postgres: ${{ secrets.PROD_POSTGRES }}
+          prod-traefik: ${{ secrets.PROD_TRAEFIK }}
+      - name: build and plan prod
+        uses: ./.github/actions/plan
+        with:
+          compose-config-args: "-f production.yml"
+          tf-api-token: ${{ secrets.TF_API_TOKEN }}
+          ssh-key: ${{ secrets.SSH_KEY }}
+          droplet-host: ${{ secrets.DROPLET_HOST }}
+          env: prod
+          github-token: ${{ secrets.GITHUB_TOKEN }}
