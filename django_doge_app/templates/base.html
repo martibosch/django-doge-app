@@ -4,7 +4,7 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <title>{% block title %}Django Doge App{% endblock title %}</title>
+    <title>{% block title %}Django Doge App - such workflow{% endblock title %}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Example Django app using the Doge workflow">
     <meta name="author" content="Martí Bosch">
@@ -86,13 +86,13 @@
         {% for message in messages %}
           <div class="alert alert-dismissible {% if message.tags %}alert-{{ message.tags }}{% endif %}">
             {{ message }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
           </div>
         {% endfor %}
       {% endif %}
 
       {% block content %}
-        <p>Use this document as a way to quick start any new project.</p>
+          <img src="{% static 'images/doge.png' %}" alt="such workflow">
       {% endblock content %}
 
     </div> <!-- /container -->
